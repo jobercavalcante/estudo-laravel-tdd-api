@@ -96,4 +96,73 @@ class BooksControllerTest extends TestCase
             ])->etc();
         });
     }
+
+
+    public function test_put_book_endpoint()
+    {
+
+        Book::factory()->createOne();
+        $book = [
+            'title' => 'Ola mundo',
+            'isbn' => 'fdgdfgdfgdfg'
+        ];
+
+        $response = $this->putJson('/api/books/1', $book);
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(5);
+
+        $response->assertJson(function (AssertableJson $json) use ($book) {
+
+            $json->whereAllType([
+                'id' => 'integer',
+                'title' => 'string',
+                'isbn' => 'string'
+            ]);
+
+            $json->hasAll(['id', 'title', 'isbn', 'created_at', 'updated_at']);
+
+            $json->whereAll([
+                'title' => $book['title'],
+                'isbn' => $book['isbn']
+            ])->etc();
+        });
+    }
+
+    public function test_patch_book_endpoint()
+    {
+
+        Book::factory()->createOne();
+        $book = [
+            'title' => 'Ola mundo atualizado',
+        ];
+
+        $response = $this->putJson('/api/books/1', $book);
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(5);
+
+        $response->assertJson(function (AssertableJson $json) use ($book) {
+
+            $json->whereAllType([
+                'id' => 'integer',
+                'title' => 'string',
+                'isbn' => 'string'
+            ]);
+
+            $json->hasAll(['id', 'title', 'isbn', 'created_at', 'updated_at']);
+
+            $json->where(
+                'title',
+                $book['title']
+            );
+        });
+    }
+
+    public function test_delete_book_endpoint()
+    {
+        Book::factory()->createOne();
+        $response = $this->deleteJson('/api/books/1');
+        $response->assertStatus(204);
+    }
 }
