@@ -93,7 +93,7 @@ class BooksControllerTest extends TestCase
             $json->whereAll([
                 'title' => $book->title,
                 'isbn' => $book->isbn
-            ]);
+            ])->etc();
         });
     }
 }
